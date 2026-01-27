@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Member } from '../types';
-import { X, Sparkles, Loader2, Plus, ArrowRight, ShieldCheck, Save } from 'lucide-react';
-import { parseMembersFromText } from '../services/geminiService';
+import { X, Sparkles, Loader2, Plus, ArrowRight, ShieldCheck, Save, Camera, Upload } from 'lucide-react';
+import { parseMembersFromText, parseMembersFromImage } from '../services/geminiService';
 
 interface AddMembersModalProps {
   isOpen: boolean;
@@ -200,8 +200,33 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
           {activeTab === 'BATCH' && !initialData ? (
             <div className="space-y-4 h-full flex flex-col">
               <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 text-sm text-blue-800">
-                <p>直接貼上整串名單，AI 會自動幫你整理！</p>
-                <p className="opacity-70 text-xs mt-1">支援格式：王小明 0912345678 (04/20)</p>
+                <p>直接貼上整串名單，或 <span className="font-bold text-blue-700">拍照上傳</span>，AI 自動整理！</p>
+                <p className="opacity-70 text-xs mt-1">支援：文字名單、手寫筆記照片、截圖</p>
+              </div>
+
+              {/* Image Upload Button */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isProcessing}
+                  className="flex-1 py-3 border-2 border-dashed border-brand-300 rounded-xl flex items-center justify-center gap-2 text-brand-600 font-bold hover:bg-brand-50 transition-colors"
+                >
+                  <Camera size={20} />
+                  <span>拍照 / 上傳圖片</span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </div>
+
+              <div className="relative flex items-center py-2">
+                <div className="flex-grow border-t border-gray-200"></div>
+                <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">或是</span>
+                <div className="flex-grow border-t border-gray-200"></div>
               </div>
 
               <textarea
