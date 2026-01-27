@@ -1,4 +1,4 @@
-import { GoogleGenAI, SchemaType } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { Member, VoucherType } from "../types";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -53,14 +53,14 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
       config: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: SchemaType.ARRAY,
+          type: Type.ARRAY,
           items: {
-            type: SchemaType.OBJECT,
+            type: Type.OBJECT,
             properties: {
-              name: { type: SchemaType.STRING },
-              phone: { type: SchemaType.STRING },
-              birthdayMonth: { type: SchemaType.STRING, description: "1-12 without leading zero if possible, or empty" },
-              note: { type: SchemaType.STRING }
+              name: { type: Type.STRING },
+              phone: { type: Type.STRING },
+              birthdayMonth: { type: Type.STRING, description: "1-12 without leading zero if possible, or empty" },
+              note: { type: Type.STRING }
             },
             required: ["name", "phone"]
           }
@@ -69,7 +69,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
     });
 
     if (response.text) {
-      return JSON.parse(response.text()) as ParsedMemberData[];
+      return JSON.parse(response.text) as ParsedMemberData[];
     }
     return [];
   } catch (error) {
@@ -102,12 +102,12 @@ export const parseVoucherFromText = async (text: string): Promise<ParsedVoucherD
       config: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: SchemaType.OBJECT,
+          type: Type.OBJECT,
           properties: {
-            title: { type: SchemaType.STRING },
-            code: { type: SchemaType.STRING },
-            type: { type: SchemaType.STRING, enum: ['NONE', 'ELECTRONIC', 'PAPER'] },
-            notes: { type: SchemaType.STRING }
+            title: { type: Type.STRING },
+            code: { type: Type.STRING },
+            type: { type: Type.STRING, enum: ['NONE', 'ELECTRONIC', 'PAPER'] },
+            notes: { type: Type.STRING }
           },
           required: ["title"]
         }
@@ -115,7 +115,7 @@ export const parseVoucherFromText = async (text: string): Promise<ParsedVoucherD
     });
 
     if (response.text) {
-      const data = JSON.parse(response.text());
+      const data = JSON.parse(response.text);
       if (!Object.values(VoucherType).includes(data.type)) {
         data.type = VoucherType.ELECTRONIC;
       }
