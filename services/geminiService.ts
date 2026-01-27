@@ -29,7 +29,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3-flash",
       contents: [
         {
           role: "user",
@@ -83,7 +83,7 @@ export const parseVoucherFromText = async (text: string): Promise<ParsedVoucherD
   if (!ai) return null;
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3-flash",
       contents: [
         {
           role: "user",
