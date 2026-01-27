@@ -29,7 +29,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: [
         {
           role: "user",
@@ -135,7 +135,7 @@ export const parseMembersFromImage = async (base64Image: string): Promise<Parsed
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: [
         {
           role: "user",
