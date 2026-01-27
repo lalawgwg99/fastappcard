@@ -474,7 +474,7 @@ function App() {
               value={storeName}
               onChange={(e) => setStoreName(e.target.value)}
               placeholder={user ? "此清單已同步至您的雲端帳號" : "在此輸入店名 (本機模式)"}
-              className="block w-full pl-10 pr-3 py-1.5 border-none rounded-lg bg-brand-700/40 text-white placeholder-brand-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm font-medium transition-all"
+              className="block w-full pl-10 pr-3 py-1.5 border-none rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm font-medium transition-all"
             />
           </div>
 
@@ -486,7 +486,7 @@ function App() {
               placeholder="搜尋姓名或電話..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-brand-700/50 text-white placeholder-brand-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-white/30 border border-brand-500/30"
+              className="w-full bg-white text-gray-900 placeholder-gray-400 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 border-none shadow-sm"
             />
           </div>
         </div>
