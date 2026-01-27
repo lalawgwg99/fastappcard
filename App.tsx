@@ -420,7 +420,7 @@ function App() {
                     >
                       <Upload size={18} className="text-brand-600" />
                       <span>匯入檔案</span>
-                    </button> // Added Usage Guide
+                    </button>
 
                     <div className="h-px bg-gray-100 mx-2 my-1"></div>
                     <button
@@ -444,132 +444,131 @@ function App() {
                       </>
                     )}
                   </div>
-                </div>
-                  
+
                   {/* Footer / Credits */}
-              <div className="bg-gray-50 p-3 border-t border-gray-100 text-center">
-                <p className="text-[10px] text-gray-400 font-mono">
-                  Powered by 榮德
-                </p>
-              </div>
-            </div>
+                  <div className="bg-gray-50 p-3 border-t border-gray-100 text-center">
+                    <p className="text-[10px] text-gray-400 font-mono">
+                      Powered by 榮德
+                    </p>
+                  </div>
+                </div>
               )}
 
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImportFile}
+                accept=".json"
+                hidden
+              />
+            </div>
+          </div>
+
+          {/* Store Name Input */}
+          <div className="relative mb-3 group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Store className="text-brand-200" size={16} />
+            </div>
             <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImportFile}
-              accept=".json"
-              hidden
+              type="text"
+              value={storeName}
+              onChange={(e) => setStoreName(e.target.value)}
+              placeholder={user ? "此清單已同步至您的雲端帳號" : "在此輸入店名 (本機模式)"}
+              className="block w-full pl-10 pr-3 py-1.5 border-none rounded-lg bg-brand-700/40 text-white placeholder-brand-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm font-medium transition-all"
+            />
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-200" size={18} />
+            <input
+              type="text"
+              placeholder="搜尋姓名或電話..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-brand-700/50 text-white placeholder-brand-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-white/30 border border-brand-500/30"
             />
           </div>
         </div>
 
-        {/* Store Name Input */}
-        <div className="relative mb-3 group">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Store className="text-brand-200" size={16} />
-          </div>
-          <input
-            type="text"
-            value={storeName}
-            onChange={(e) => setStoreName(e.target.value)}
-            placeholder={user ? "此清單已同步至您的雲端帳號" : "在此輸入店名 (本機模式)"}
-            className="block w-full pl-10 pr-3 py-1.5 border-none rounded-lg bg-brand-700/40 text-white placeholder-brand-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm font-medium transition-all"
-          />
+        {/* Toolbar */}
+        <div className="flex items-center justify-end px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm">
+          {(members.length > 0 || storeName) && (
+            <button onClick={handleClearAll} className="text-gray-400 hover:text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-50 transition-colors">
+              <Trash2 size={14} /> 清空所有資料
+            </button>
+          )}
         </div>
 
-        {/* Search Bar */}
-        <div className="relative mb-2">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-200" size={18} />
-          <input
-            type="text"
-            placeholder="搜尋姓名或電話..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-brand-700/50 text-white placeholder-brand-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-white/30 border border-brand-500/30"
-          />
-        </div>
-      </div>
-
-      {/* Toolbar */}
-      <div className="flex items-center justify-end px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm">
-        {(members.length > 0 || storeName) && (
-          <button onClick={handleClearAll} className="text-gray-400 hover:text-red-500 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-50 transition-colors">
-            <Trash2 size={14} /> 清空所有資料
-          </button>
-        )}
-      </div>
-
-      {/* List */}
-      <div className="flex-1 overflow-y-auto pb-24 bg-gray-50">
-        {filteredMembers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-              <Search size={30} className="text-gray-400" />
+        {/* List */}
+        <div className="flex-1 overflow-y-auto pb-24 bg-gray-50">
+          {filteredMembers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                <Search size={30} className="text-gray-400" />
+              </div>
+              <p>{searchTerm ? '找不到資料' : '沒有資料'}</p>
+              <p className="text-xs mt-2 text-gray-400">
+                {user ? '雲端資料庫目前是空的' : '請新增資料，或登入以讀取雲端存檔'}
+              </p>
             </div>
-            <p>{searchTerm ? '找不到資料' : '沒有資料'}</p>
-            <p className="text-xs mt-2 text-gray-400">
-              {user ? '雲端資料庫目前是空的' : '請新增資料，或登入以讀取雲端存檔'}
-            </p>
-          </div>
-        ) : (
-          <div>
-            {filteredMembers.map(member => (
-              <MemberRow
-                key={member.id}
-                member={member}
-                onUpdate={handleUpdate}
-                onDelete={handleDelete}
-                onEdit={triggerEdit}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+          ) : (
+            <div>
+              {filteredMembers.map(member => (
+                <MemberRow
+                  key={member.id}
+                  member={member}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                  onEdit={triggerEdit}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* FAB */}
-      <div className="fixed bottom-6 right-6 lg:absolute lg:bottom-6 lg:right-6 z-30">
-        <button
-          onClick={() => {
+        {/* FAB */}
+        <div className="fixed bottom-6 right-6 lg:absolute lg:bottom-6 lg:right-6 z-30">
+          <button
+            onClick={() => {
+              setEditingMember(null);
+              setIsModalOpen(true);
+            }}
+            className="w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-xl shadow-brand-600/40 flex items-center justify-center transition-transform active:scale-95"
+          >
+            <Plus size={32} />
+          </button>
+        </div>
+
+        <AddMembersModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
             setEditingMember(null);
-            setIsModalOpen(true);
           }}
-          className="w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-xl shadow-brand-600/40 flex items-center justify-center transition-transform active:scale-95"
-        >
-          <Plus size={32} />
-        </button>
+          onAddMembers={handleAddMembers}
+          existingPhoneNumbers={existingPhoneNumbers}
+          initialData={editingMember}
+          onEditSave={handleEditSave}
+        />
+
+        <BirthdayModal
+          isOpen={isBirthdayModalOpen}
+          onClose={() => setIsBirthdayModalOpen(false)}
+          members={allBirthdayMembers}
+          currentMonth={currentMonth}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          onEdit={triggerEdit}
+        />
+
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
+
       </div>
-
-      <AddMembersModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingMember(null);
-        }}
-        onAddMembers={handleAddMembers}
-        existingPhoneNumbers={existingPhoneNumbers}
-        initialData={editingMember}
-        onEditSave={handleEditSave}
-      />
-
-      <BirthdayModal
-        isOpen={isBirthdayModalOpen}
-        onClose={() => setIsBirthdayModalOpen(false)}
-        members={allBirthdayMembers}
-        currentMonth={currentMonth}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
-        onEdit={triggerEdit}
-      />
-
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
-
-    </div>
     </div >
   );
 }
