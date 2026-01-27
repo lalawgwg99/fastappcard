@@ -12,9 +12,9 @@ interface AddMembersModalProps {
   onEditSave?: (updatedData: Partial<Member>) => void;
 }
 
-export const AddMembersModal: React.FC<AddMembersModalProps> = ({ 
-  isOpen, 
-  onClose, 
+export const AddMembersModal: React.FC<AddMembersModalProps> = ({
+  isOpen,
+  onClose,
   onAddMembers,
   existingPhoneNumbers = new Set(),
   initialData,
@@ -48,9 +48,9 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
         // Default to batch if empty, or keep previous pref? 
         // For simplicity let's keep user's flow or default to Batch for power users
         if (activeTab === 'SINGLE') {
-             // keep single
+          // keep single
         } else {
-             setActiveTab('BATCH');
+          setActiveTab('BATCH');
         }
         setFilterDuplicates(true);
       }
@@ -63,7 +63,7 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
     if (!batchText.trim()) return;
     setIsProcessing(true);
     const parsed = await parseMembersFromText(batchText);
-    
+
     if (parsed.length > 0) {
       const newMembers: Omit<Member, 'id' | 'createdAt'>[] = [];
       const processedPhones = new Set<string>();
@@ -74,18 +74,18 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
 
         // Duplicate Check Logic
         if (filterDuplicates) {
-            // Check 1: Is it already in the app?
-            if (existingPhoneNumbers.has(phoneKey)) {
-                duplicateCount++;
-                continue;
-            }
-            // Check 2: Is it already in THIS batch?
-            if (processedPhones.has(phoneKey)) {
-                duplicateCount++;
-                continue;
-            }
+          // Check 1: Is it already in the app?
+          if (existingPhoneNumbers.has(phoneKey)) {
+            duplicateCount++;
+            continue;
+          }
+          // Check 2: Is it already in THIS batch?
+          if (processedPhones.has(phoneKey)) {
+            duplicateCount++;
+            continue;
+          }
         }
-        
+
         processedPhones.add(phoneKey);
         newMembers.push({
           name: p.name,
@@ -101,17 +101,17 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
       if (newMembers.length > 0) {
         onAddMembers(newMembers);
         setBatchText('');
-        
+
         let msg = `成功新增 ${newMembers.length} 筆資料`;
         if (duplicateCount > 0) {
-            msg += `\n(已自動排除 ${duplicateCount} 筆重複號碼)`;
+          msg += `\n(已自動排除 ${duplicateCount} 筆重複號碼)`;
         }
         alert(msg);
         onClose();
       } else if (duplicateCount > 0) {
-         alert(`所有資料 (${duplicateCount} 筆) 皆為重複號碼，未新增任何資料。`);
+        alert(`所有資料 (${duplicateCount} 筆) 皆為重複號碼，未新增任何資料。`);
       } else {
-         alert("無法解析有效資料，請確認格式。");
+        alert("無法解析有效資料，請確認格式。");
       }
     } else {
       alert("無法解析文字，請確認格式是否正確 (姓名 電話)");
@@ -123,42 +123,42 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
     e.preventDefault();
 
     if (initialData && onEditSave) {
-        // Edit Mode Save
-        // We only check duplicates if the phone number CHANGED and filter is on
-        if (filterDuplicates && phone !== initialData.phone && existingPhoneNumbers.has(phone)) {
-             alert('此電話號碼已存在於其他會員資料中！');
-             return;
-        }
+      // Edit Mode Save
+      // We only check duplicates if the phone number CHANGED and filter is on
+      if (filterDuplicates && phone !== initialData.phone && existingPhoneNumbers.has(phone)) {
+        alert('此電話號碼已存在於其他會員資料中！');
+        return;
+      }
 
-        onEditSave({
-            name,
-            phone,
-            note
-        });
-        // onEditSave handles closing
+      onEditSave({
+        name,
+        phone,
+        note
+      });
+      // onEditSave handles closing
     } else {
-        // Add Mode Save
-        if (filterDuplicates && existingPhoneNumbers.has(phone)) {
-            alert('此電話號碼已存在！');
-            return;
-        }
+      // Add Mode Save
+      if (filterDuplicates && existingPhoneNumbers.has(phone)) {
+        alert('此電話號碼已存在！');
+        return;
+      }
 
-        onAddMembers([{
-          name,
-          phone,
-          isUsed: false,
-          voucherType: 'NONE',
-          isVip: false,
-          birthdayMonth: '',
-          note: note
-        }]);
-        
-        setName('');
-        setPhone('');
-        setNote('');
-        // Optional: keep open for rapid entry? Or close. 
-        // User behavior usually prefers close.
-        onClose();
+      onAddMembers([{
+        name,
+        phone,
+        isUsed: false,
+        voucherType: 'NONE',
+        isVip: false,
+        birthdayMonth: '',
+        note: note
+      }]);
+
+      setName('');
+      setPhone('');
+      setNote('');
+      // Optional: keep open for rapid entry? Or close. 
+      // User behavior usually prefers close.
+      onClose();
     }
   };
 
@@ -168,7 +168,7 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-bold text-gray-800">
-             {initialData ? '修改資料' : '新增資料'}
+            {initialData ? '修改資料' : '新增資料'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
             <X size={24} className="text-gray-500" />
@@ -177,22 +177,22 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
 
         {/* Tabs - Only show if NOT editing */}
         {!initialData && (
-            <div className="flex p-2 gap-2 bg-gray-50 border-b">
+          <div className="flex p-2 gap-2 bg-gray-50 border-b">
             <button
-                onClick={() => setActiveTab('BATCH')}
-                className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'BATCH' ? 'bg-white shadow text-brand-600' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('BATCH')}
+              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'BATCH' ? 'bg-white shadow text-brand-600' : 'text-gray-500'}`}
             >
-                <span className="flex items-center justify-center gap-1">
+              <span className="flex items-center justify-center gap-1">
                 <Sparkles size={14} /> AI 批量貼上
-                </span>
+              </span>
             </button>
             <button
-                onClick={() => setActiveTab('SINGLE')}
-                className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'SINGLE' ? 'bg-white shadow text-brand-600' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('SINGLE')}
+              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'SINGLE' ? 'bg-white shadow text-brand-600' : 'text-gray-500'}`}
             >
-                單筆輸入
+              單筆輸入
             </button>
-            </div>
+          </div>
         )}
 
         {/* Content */}
@@ -203,26 +203,26 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
                 <p>直接貼上整串名單，AI 會自動幫你整理！</p>
                 <p className="opacity-70 text-xs mt-1">支援格式：王小明 0912345678 (04/20)</p>
               </div>
-              
+
               <textarea
                 value={batchText}
                 onChange={(e) => setBatchText(e.target.value)}
                 placeholder="貼上你的清單..."
-                className="flex-1 w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none resize-none font-mono text-sm leading-relaxed"
+                className="flex-1 w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none resize-none font-mono text-sm leading-relaxed text-gray-900 bg-white"
               />
 
               <div className="flex items-center gap-2 pb-2">
-                 <input 
-                    type="checkbox" 
-                    id="filterDup" 
-                    checked={filterDuplicates} 
-                    onChange={e => setFilterDuplicates(e.target.checked)}
-                    className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 border-gray-300"
-                 />
-                 <label htmlFor="filterDup" className="text-sm text-gray-700 font-medium flex items-center gap-1">
-                    <ShieldCheck size={16} className="text-green-600"/>
-                    排除重複號碼 (包含已存在的)
-                 </label>
+                <input
+                  type="checkbox"
+                  id="filterDup"
+                  checked={filterDuplicates}
+                  onChange={e => setFilterDuplicates(e.target.checked)}
+                  className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 border-gray-300"
+                />
+                <label htmlFor="filterDup" className="text-sm text-gray-700 font-medium flex items-center gap-1">
+                  <ShieldCheck size={16} className="text-green-600" />
+                  排除重複號碼 (包含已存在的)
+                </label>
               </div>
 
               <button
@@ -242,7 +242,7 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-gray-900 bg-white"
                   placeholder="輸入姓名"
                 />
               </div>
@@ -253,7 +253,7 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-mono"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none font-mono text-gray-900 bg-white"
                   placeholder="輸入電話"
                 />
               </div>
@@ -264,22 +264,22 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
                   type="text"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-gray-900 bg-white"
                   placeholder="例如：需確認身分、特別需求..."
                 />
               </div>
-              
+
               <div className="flex items-center gap-2 pt-2">
-                 <input 
-                    type="checkbox" 
-                    id="filterDupSingle" 
-                    checked={filterDuplicates} 
-                    onChange={e => setFilterDuplicates(e.target.checked)}
-                    className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 border-gray-300"
-                 />
-                 <label htmlFor="filterDupSingle" className="text-sm text-gray-600">
-                    檢查重複號碼
-                 </label>
+                <input
+                  type="checkbox"
+                  id="filterDupSingle"
+                  checked={filterDuplicates}
+                  onChange={e => setFilterDuplicates(e.target.checked)}
+                  className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 border-gray-300"
+                />
+                <label htmlFor="filterDupSingle" className="text-sm text-gray-600">
+                  檢查重複號碼
+                </label>
               </div>
 
               <button
@@ -287,9 +287,9 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
                 className="w-full py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg hover:bg-brand-700 mt-6"
               >
                 {initialData ? (
-                    <><Save size={20} className="inline mr-1" /> 儲存修改</>
+                  <><Save size={20} className="inline mr-1" /> 儲存修改</>
                 ) : (
-                    <><Plus size={20} className="inline mr-1" /> 新增</>
+                  <><Plus size={20} className="inline mr-1" /> 新增</>
                 )}
               </button>
             </form>
