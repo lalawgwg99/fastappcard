@@ -29,7 +29,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
+      model: "gemini-1.5-flash",
       contents: [
         {
           role: "user",

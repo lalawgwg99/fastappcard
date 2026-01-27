@@ -464,19 +464,7 @@ function App() {
             </div>
           </div>
 
-          {/* Store Name Input */}
-          <div className="relative mb-3 group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Store className="text-brand-200" size={16} />
-            </div>
-            <input
-              type="text"
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-              placeholder={user ? "此清單已同步至您的雲端帳號" : "在此輸入店名 (本機模式)"}
-              className="block w-full pl-10 pr-3 py-1.5 border-none rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm font-medium transition-all"
-            />
-          </div>
+
 
           {/* Search Bar */}
           <div className="relative mb-2">
