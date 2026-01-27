@@ -127,3 +127,64 @@ export const parseVoucherFromText = async (text: string): Promise<ParsedVoucherD
     return null;
   }
 };
+
+export const parseMembersFromImage = async (base64Image: string): Promise<ParsedMemberData[]> => {
+  if (!ai) {
+    alert("請先設定 VITE_GEMINI_API_KEY 環境變數才能使用 AI 功能");
+    return [];
+  }
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Parse the text from this image into a list of members.
+              Target: Name (Chinese) and Phone Number.
+              
+              Extraction Rules:
+              1. Name: Extract the person's name.
+              2. Phone: Extract the mobile number.
+              3. Birthday: Extract if visible.
+              4. Note: Any other text.
+              `
+            },
+            {
+              inlineData: {
+                mimeType: "image/jpeg",
+                data: base64Image
+              }
+            }
+          ]
+        }
+      ],
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              name: { type: Type.STRING },
+              phone: { type: Type.STRING },
+              birthdayMonth: { type: Type.STRING },
+              note: { type: Type.STRING }
+            },
+            required: ["name", "phone"]
+          }
+        }
+      }
+    });
+
+    if (response.text) {
+      return JSON.parse(response.text) as ParsedMemberData[];
+    }
+    return [];
+  } catch (error) {
+    console.error("Gemini Image Parse Error:", error);
+    alert("AI 圖片解析失敗，請稍後再試");
+    return [];
+  }
+};

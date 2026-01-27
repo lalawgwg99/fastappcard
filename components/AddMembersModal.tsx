@@ -59,11 +59,28 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleBatchSubmit = async () => {
-    if (!batchText.trim()) return;
-    setIsProcessing(true);
-    const parsed = await parseMembersFromText(batchText);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = (reader.result as string).split(',')[1]; // Remove data:image/jpeg;base64,
+
+      setIsProcessing(true);
+      const parsed = await parseMembersFromImage(base64String);
+      processParsedMembers(parsed);
+      setIsProcessing(false);
+
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const processParsedMembers = (parsed: any[]) => {
     if (parsed.length > 0) {
       const newMembers: Omit<Member, 'id' | 'createdAt'>[] = [];
       const processedPhones = new Set<string>();
@@ -72,15 +89,8 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
       for (const p of parsed) {
         const phoneKey = p.phone.trim();
 
-        // Duplicate Check Logic
         if (filterDuplicates) {
-          // Check 1: Is it already in the app?
-          if (existingPhoneNumbers.has(phoneKey)) {
-            duplicateCount++;
-            continue;
-          }
-          // Check 2: Is it already in THIS batch?
-          if (processedPhones.has(phoneKey)) {
+          if (existingPhoneNumbers.has(phoneKey) || processedPhones.has(phoneKey)) {
             duplicateCount++;
             continue;
           }
@@ -102,20 +112,27 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
         onAddMembers(newMembers);
         setBatchText('');
 
-        let msg = `成功新增 ${newMembers.length} 筆資料`;
+        let msg = `已從圖片/文字新增 ${newMembers.length} 筆資料`;
         if (duplicateCount > 0) {
-          msg += `\n(已自動排除 ${duplicateCount} 筆重複號碼)`;
+          msg += `\n(已排除 ${duplicateCount} 筆重複)`;
         }
         alert(msg);
         onClose();
       } else if (duplicateCount > 0) {
-        alert(`所有資料 (${duplicateCount} 筆) 皆為重複號碼，未新增任何資料。`);
+        alert(`所有資料 (${duplicateCount} 筆) 皆為重複號碼。`);
       } else {
-        alert("無法解析有效資料，請確認格式。");
+        alert("未發現有效的新資料。");
       }
     } else {
-      alert("無法解析文字，請確認格式是否正確 (姓名 電話)");
+      alert("AI 無法識別內容，請確認圖片清晰度或文字格式。");
     }
+  };
+
+  const handleBatchSubmit = async () => {
+    if (!batchText.trim()) return;
+    setIsProcessing(true);
+    const parsed = await parseMembersFromText(batchText);
+    processParsedMembers(parsed);
     setIsProcessing(false);
   };
 
