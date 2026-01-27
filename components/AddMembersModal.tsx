@@ -30,6 +30,8 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
   const [phone, setPhone] = useState('');
   const [note, setNote] = useState('');
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   // Effect to handle "Edit Mode" or reset
   useEffect(() => {
     if (isOpen) {
@@ -58,8 +60,6 @@ export const AddMembersModal: React.FC<AddMembersModalProps> = ({
   }, [isOpen, initialData]);
 
   if (!isOpen) return null;
-
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
