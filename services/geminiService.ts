@@ -29,7 +29,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash",
+      model: "gemini-2.0-flash",
       contents: [
         {
           role: "user",
@@ -74,7 +74,7 @@ export const parseMembersFromText = async (text: string): Promise<ParsedMemberDa
     return [];
   } catch (error) {
     console.error("Gemini Parse Error:", error);
-    alert("AI 解析發生錯誤，請稍後再試或檢查 API Key");
+    alert(`AI 解析發生錯誤: ${error instanceof Error ? error.message : String(error)}`);
     return [];
   }
 };
@@ -83,7 +83,7 @@ export const parseVoucherFromText = async (text: string): Promise<ParsedVoucherD
   if (!ai) return null;
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash",
+      model: "gemini-2.0-flash",
       contents: [
         {
           role: "user",
@@ -135,7 +135,7 @@ export const parseMembersFromImage = async (base64Image: string): Promise<Parsed
   }
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash",
+      model: "gemini-2.0-flash",
       contents: [
         {
           role: "user",
@@ -184,7 +184,7 @@ export const parseMembersFromImage = async (base64Image: string): Promise<Parsed
     return [];
   } catch (error) {
     console.error("Gemini Image Parse Error:", error);
-    alert("AI 圖片解析失敗，請稍後再試");
+    alert(`AI 圖片解析失敗: ${error instanceof Error ? error.message : String(error)}`);
     return [];
   }
 };
