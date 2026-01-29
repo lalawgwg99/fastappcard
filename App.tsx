@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Search, Filter, Archive, Users, Trash2, Download, Upload, MoreHorizontal, Link as LinkIcon, Share2, Store, Gift, FileJson, Settings, UserCircle, LogOut, Cloud, CloudOff, HelpCircle } from 'lucide-react';
+import { Plus, Search, Filter, Archive, Users, Trash2, MoreHorizontal, Settings, UserCircle, LogOut, Cloud, FileText, HelpCircle, Store, Gift, CloudOff } from 'lucide-react';
 import { Member, User } from './types';
 import { MemberRow } from './components/MemberRow';
 import { AddMembersModal } from './components/AddMembersModal';
@@ -7,7 +7,7 @@ import { BirthdayModal } from './components/BirthdayModal';
 import { LoginModal } from './components/LoginModal';
 import { supabaseService } from './services/supabaseService';
 import { supabase } from './services/supabaseClient';
-import LZString from 'lz-string';
+// LZString removed
 
 const STORAGE_KEY = 'checkout-swift-data-simple-v1';
 const STORE_NAME_KEY = 'checkout-swift-store-name';
@@ -29,7 +29,7 @@ function App() {
   const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // FileInput Ref Removed
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 1. Initialize: Check for User Session & Load Data
@@ -146,43 +146,7 @@ function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMenuOpen]);
 
-  // Shared Link Logic
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sharedData = params.get('data');
-    if (sharedData) {
-      try {
-        const decompressed = LZString.decompressFromEncodedURIComponent(sharedData);
-        if (decompressed) {
-          const json = JSON.parse(decompressed);
-          let newMembers: Member[] = [];
-          let newStoreName = '';
-          if (Array.isArray(json)) newMembers = json;
-          else if (json.members && Array.isArray(json.members)) {
-            newMembers = json.members;
-            newStoreName = json.storeName || '';
-          }
-
-          if (newMembers.length > 0) {
-            setTimeout(() => {
-              const msg = `偵測到分享連結！\n內含 ${newMembers.length} 筆資料。\n\n確定要匯入嗎？(將合併至目前列表)`;
-              if (confirm(msg)) {
-                // Merge instead of replace for better UX when logged in
-                const newItems = newMembers.map(m => ({ ...m, id: generateId() }));
-                setMembers(prev => [...newItems, ...prev]);
-                if (newStoreName && !storeName) setStoreName(newStoreName);
-                window.history.replaceState({}, document.title, window.location.pathname);
-              } else {
-                window.history.replaceState({}, document.title, window.location.pathname);
-              }
-            }, 500);
-          }
-        }
-      } catch (e) {
-        console.error('Failed to parse shared link', e);
-      }
-    }
-  }, []);
+  // Shared Link Logic Removed
 
   const generateId = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
@@ -226,70 +190,9 @@ function App() {
     }
   };
 
-  const handleExport = () => {
-    const exportData = { storeName, members };
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    const date = new Date().toISOString().split('T')[0];
-    const safeName = storeName ? `-${storeName}` : '';
-    link.href = url;
-    link.download = `checkout-members${safeName}-${date}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleGeneratePDF = () => {
+    window.print();
     setIsMenuOpen(false);
-  };
-
-  const handleImportTrigger = () => {
-    fileInputRef.current?.click();
-    setIsMenuOpen(false);
-  };
-
-  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const json = JSON.parse(event.target?.result as string);
-        let importMembers: any[] = [];
-        let importStoreName = '';
-        if (Array.isArray(json)) importMembers = json;
-        else if (json.members && Array.isArray(json.members)) {
-          importMembers = json.members;
-          importStoreName = json.storeName || '';
-        }
-        if (importMembers.length > 0) {
-          if (confirm(`確定要匯入 ${importMembers.length} 筆資料嗎？`)) {
-            const processedMembers = importMembers.map((m: any) => ({
-              ...m,
-              id: m.id || generateId()
-            }));
-            setMembers(prev => [...processedMembers, ...prev]);
-            if (importStoreName && !storeName) setStoreName(importStoreName);
-          }
-        } else { alert('檔案內容格式不符'); }
-      } catch (err) { alert('檔案格式錯誤'); }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
-
-  const handleShareLink = () => {
-    try {
-      if (members.length === 0) { alert('目前沒有資料可以分享'); return; }
-      const payload = { storeName, members };
-      const jsonStr = JSON.stringify(payload);
-      const compressed = LZString.compressToEncodedURIComponent(jsonStr);
-      const url = `${window.location.origin}${window.location.pathname}?data=${compressed}`;
-      if (url.length > 8000) { alert('資料量過大，建議使用「匯出檔案」功能來傳送。'); return; }
-      navigator.clipboard.writeText(url).then(() => {
-        alert('連結已複製！');
-      }).catch(() => { prompt("請手動複製連結：", url); });
-      setIsMenuOpen(false);
-    } catch (e) { console.error(e); alert('產生連結失敗'); }
   };
 
   const filteredMembers = members.filter(m => {
@@ -397,34 +300,16 @@ function App() {
 
                   <div className="py-1">
                     <button
-                      onClick={handleShareLink}
+                      onClick={handleGeneratePDF}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 font-medium transition-colors"
                     >
-                      <LinkIcon size={18} className="text-green-500" />
-                      <span>分享連結</span>
-                    </button>
-
-                    <div className="h-px bg-gray-100 mx-2 my-1"></div>
-
-                    <button
-                      onClick={handleExport}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 font-medium transition-colors"
-                    >
-                      <Download size={18} className="text-brand-600" />
-                      <span>匯出備份</span>
-                    </button>
-
-                    <button
-                      onClick={handleImportTrigger}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 font-medium transition-colors"
-                    >
-                      <Upload size={18} className="text-brand-600" />
-                      <span>匯入檔案</span>
+                      <FileText size={18} className="text-brand-600" />
+                      <span>生成 PDF 檔</span>
                     </button>
 
                     <div className="h-px bg-gray-100 mx-2 my-1"></div>
                     <button
-                      onClick={() => alert("【使用說明】\n1. 新增會員：點擊右下角 + 號\n2. AI 辨識：貼上整串名單 (姓名 電話)\n3. 搜尋：利用上方搜尋列尋找會員\n4. 備份：透過選單匯出/匯入資料\n5. 雲端同步：登入後自動備份")}
+                      onClick={() => alert("【使用說明】\n1. 新增會員：點擊右下角 + 號\n2. AI 辨識：貼上整串名單 (姓名 電話)\n3. 搜尋：利用上方搜尋列尋找會員\n4. 生成PDF：點選選單建立列印檔\n5. 雲端同步：登入後自動備份")}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-gray-700 font-medium transition-colors"
                     >
                       <HelpCircle size={18} className="text-blue-500" />
@@ -454,13 +339,7 @@ function App() {
                 </div>
               )}
 
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImportFile}
-                accept=".json"
-                hidden
-              />
+              {/* File Input Removed */}
             </div>
           </div>
 
