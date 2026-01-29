@@ -194,12 +194,14 @@ function App() {
     setIsMenuOpen(false);
     // Add small delay to allow menu to close before printing
     setTimeout(() => {
-      try {
-        console.log("Calling window.print()...");
-        window.print();
-      } catch (e) {
-        console.error("Print failed:", e);
-        alert("無法啟動列印功能，請檢查瀏覽器設定。");
+      // Prompt user to ensure they know what to do next, serves as "Response" feedback
+      if (confirm("【即將建立 PDF】\n\n系統將開啟列印預覽畫面。\n\n▶ 請在接下來的畫面中選擇：「另存為 PDF」或「列印」")) {
+        try {
+          window.print();
+        } catch (e) {
+          console.error("Print failed:", e);
+          alert("無法啟動列印功能，請檢查瀏覽器設定。");
+        }
       }
     }, 300);
   };
