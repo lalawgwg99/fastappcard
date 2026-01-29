@@ -41,7 +41,7 @@
     top: 0;
     width: 100%;
     margin: 0;
-    padding: 2.5cm;
+    padding: 0.5cm;
     /* Add padding here since @page margin is 0 */
     display: block !important;
     background: white;

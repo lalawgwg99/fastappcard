@@ -11,48 +11,48 @@ export const PrintTable: React.FC<PrintTableProps> = ({ members, storeName }) =>
     const date = new Date().toLocaleDateString('zh-TW');
 
     return (
-        <div id="print-table-container" className="hidden print:block w-full p-8 bg-white">
-            <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">{storeName || '會員資料名單'}</h1>
-                <p className="text-sm text-gray-500">列印日期：{date} | 總筆數：{members.length}</p>
+        <div id="print-table-container" className="hidden print:block w-full bg-white">
+            <div className="text-center mb-4">
+                <h1 className="text-xl font-bold mb-1">{storeName || '會員資料名單'}</h1>
+                <p className="text-xs text-gray-500">列印日期：{date} | 總筆數：{members.length}</p>
             </div>
 
-            <table className="w-full border-collapse border border-gray-300 text-sm">
+            <table className="w-full border-collapse border border-gray-300 text-xs">
                 <thead>
                     <tr className="bg-gray-100">
-                        <th className="border border-gray-300 p-2 text-left w-[15%]">姓名</th>
-                        <th className="border border-gray-300 p-2 text-left w-[15%]">電話</th>
-                        <th className="border border-gray-300 p-2 text-center w-[10%]">VIP</th>
-                        <th className="border border-gray-300 p-2 text-center w-[10%]">票券</th>
-                        <th className="border border-gray-300 p-2 text-center w-[10%]">生日</th>
-                        <th className="border border-gray-300 p-2 text-left w-[30%]">備註</th>
-                        <th className="border border-gray-300 p-2 text-center w-[10%]">狀態</th>
+                        <th className="border border-gray-300 p-1.5 text-left w-[18%]">姓名</th>
+                        <th className="border border-gray-300 p-1.5 text-left w-[15%] whitespace-nowrap">電話</th>
+                        <th className="border border-gray-300 p-1.5 text-center w-[8%] text-[10px]">VIP</th>
+                        <th className="border border-gray-300 p-1.5 text-center w-[10%] text-[10px]">票券</th>
+                        <th className="border border-gray-300 p-1.5 text-center w-[8%] text-[10px]">生日</th>
+                        <th className="border border-gray-300 p-1.5 text-left text-[10px]">備註</th>
+                        <th className="border border-gray-300 p-1.5 text-center w-[8%] text-[10px]">狀態</th>
                     </tr>
                 </thead>
                 <tbody>
                     {members.map((member, index) => (
                         <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="border border-gray-300 p-2 font-medium">{member.name}</td>
-                            <td className="border border-gray-300 p-2 font-mono">{member.phone}</td>
-                            <td className="border border-gray-300 p-2 text-center">
+                            <td className="border border-gray-300 p-1.5 font-medium">{member.name}</td>
+                            <td className="border border-gray-300 p-1.5 font-mono whitespace-nowrap">{member.phone}</td>
+                            <td className="border border-gray-300 p-1.5 text-center">
                                 {member.isVip && <span className="text-yellow-600 font-bold">✓</span>}
                             </td>
-                            <td className="border border-gray-300 p-2 text-center">
+                            <td className="border border-gray-300 p-1.5 text-center text-[10px]">
                                 {member.voucherType === 'ELECTRONIC' && '電子'}
                                 {member.voucherType === 'PAPER' && '紙本'}
                                 {member.voucherType === 'NONE' && '-'}
                             </td>
-                            <td className="border border-gray-300 p-2 text-center">
+                            <td className="border border-gray-300 p-1.5 text-center text-[10px]">
                                 {member.birthdayMonth ? `${member.birthdayMonth}月` : '-'}
                             </td>
-                            <td className="border border-gray-300 p-2 text-gray-600 text-xs">
+                            <td className="border border-gray-300 p-1.5 text-gray-600 text-[10px] break-all">
                                 {member.note || ''}
                             </td>
-                            <td className="border border-gray-300 p-2 text-center">
+                            <td className="border border-gray-300 p-1.5 text-center">
                                 {member.isUsed ? (
-                                    <span className="text-red-600 font-bold text-xs">已使用</span>
+                                    <span className="text-red-600 font-bold text-[10px]">已使用</span>
                                 ) : (
-                                    <span className="text-green-600 font-bold text-xs">未使用</span>
+                                    <span className="text-green-600 font-bold text-[10px]">未使用</span>
                                 )}
                             </td>
                         </tr>
