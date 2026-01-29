@@ -5,6 +5,7 @@ import { MemberRow } from './components/MemberRow';
 import { AddMembersModal } from './components/AddMembersModal';
 import { BirthdayModal } from './components/BirthdayModal';
 import { LoginModal } from './components/LoginModal';
+import { PrintTable } from './components/PrintTable';
 import { supabaseService } from './services/supabaseService';
 import { supabase } from './services/supabaseClient';
 // LZString removed
@@ -195,7 +196,7 @@ function App() {
     // Add small delay to allow menu to close before printing
     setTimeout(() => {
       // Prompt user to ensure they know what to do next, serves as "Response" feedback
-      if (confirm("【即將建立 PDF】\n\n系統將開啟列印預覽畫面。\n\n▶ 請在接下來的畫面中選擇：「另存為 PDF」或「列印」")) {
+      if (confirm(`【即將建立 PDF】\n\n即將列印 ${filteredMembers.length} 筆資料。\n\n系統將開啟列印預覽畫面。\n\n▶ 請在接下來的畫面中選擇：「另存為 PDF」或「列印」`)) {
         try {
           window.print();
         } catch (e) {
@@ -447,6 +448,10 @@ function App() {
         />
 
       </div>
+
+      {/* Print Table (Hidden on screen, visible in print) */}
+      <PrintTable members={filteredMembers} storeName={storeName} />
+
     </div >
   );
 }

@@ -23,17 +23,28 @@
 /* Print Styles for PDF Generation */
 @media print {
 
-  /* Hide all non-essential elements */
-  button,
-  nav,
-  .fixed,
-  input[type="text"],
-  .shadow-md,
-  .shadow-2xl,
-  .bg-gray-100 {
-    display: none !important;
-    background: white !important;
-    box-shadow: none !important;
+  /* HIDE EVERYTHING by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Only show the Print Table and its children */
+  #print-table-container,
+  #print-table-container * {
+    visibility: visible;
+  }
+
+  /* Position the Print Table to fill the page */
+  #print-table-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 2.5cm;
+    /* Add padding here since @page margin is 0 */
+    display: block !important;
+    background: white;
   }
 
   /* Reset layout for full page printing */
@@ -43,73 +54,20 @@
     background: white !important;
     height: auto !important;
     overflow: visible !important;
-    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
   }
 
-  /* Ensure the container takes full width */
-  .w-full,
-  .max-w-lg {
-    max-width: 100% !important;
-    width: 100% !important;
-    box-shadow: none !important;
-  }
-
-  /* Header adjustments for print */
-  h1 {
-    color: black !important;
-    font-size: 24px !important;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  h1::after {
-    content: " - 會員名單";
-  }
-
-  /* List Container */
-  .overflow-y-auto {
-    overflow: visible !important;
-    height: auto !important;
-  }
-
-  /* Ensure rows are clearly separated and don't break across pages awkwardly (optional) */
-  .MemberRow,
-  div[class*="border-b"] {
-    page-break-inside: avoid;
-    border-bottom: 1px solid #ddd !important;
-  }
-
-  /* Header Background removal */
-  .bg-brand-600 {
-    background: transparent !important;
-    color: black !important;
-    position: static !important;
-  }
-
-  /* Hide surplus UI in header */
-  /* We specifically target search bar and buttons below */
-
-  /* Specifically hide search bar and buttons area */
-  .bg-brand-600>div:nth-child(2),
-  /* Search Bar */
-  .bg-brand-600 .flex.items-center.gap-2.relative
-
-  /* Top Right Buttons */
-    {
-    display: none !important;
-  }
-
-  /* Ensure Text Colors are black */
+  /* Ensure text color is black */
   * {
     color: black !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
 
-  /* Add a footer with date */
+  /* Page margins - Set to 0 to HIDE browser headers/footers/URL */
   @page {
-    margin: 2cm;
+    margin: 0;
+    size: auto;
   }
 }
