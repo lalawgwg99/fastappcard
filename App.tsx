@@ -191,8 +191,17 @@ function App() {
   };
 
   const handleGeneratePDF = () => {
-    window.print();
     setIsMenuOpen(false);
+    // Add small delay to allow menu to close before printing
+    setTimeout(() => {
+      try {
+        console.log("Calling window.print()...");
+        window.print();
+      } catch (e) {
+        console.error("Print failed:", e);
+        alert("無法啟動列印功能，請檢查瀏覽器設定。");
+      }
+    }, 300);
   };
 
   const filteredMembers = members.filter(m => {
